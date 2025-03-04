@@ -6,6 +6,7 @@ export default function AuthLayout() {
       <Stack.Screen name="welcome" options={{ headerShown: false }} />
       <Stack.Screen name="login" options={{ headerShown: false }} />
       <Stack.Screen name="forgetPassword" options={{ headerShown: false }} />
+      <Stack.Screen name="changePassword" options={{ headerShown: false }} />
       <Stack.Screen name="verifyOtp" options={{ headerShown: false }} />
       <Stack.Screen name="signup" options={{ headerShown: false }} />
     </Stack>
