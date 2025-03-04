@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     if (!user) {
       return Response.json({ error: "User not found" }, { status: 404 });
     }
-    user.otp = otp;
+    user.otp = parseInt(otp);
     user.otpExpiry = Date.now() + 10 * 60 * 1000;
     await user.save();
     const html = `

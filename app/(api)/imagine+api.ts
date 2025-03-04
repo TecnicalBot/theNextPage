@@ -1,10 +1,22 @@
+import dbConnect from "@/db";
+import User from "@/db/models/user";
 import { HfInference } from "@huggingface/inference";
 
 const inference = new HfInference(process.env.HUGGING_FACE_API_KEY);
 
 export async function POST(req: Request) {
-  const { text } = await req.json();
+  const { text, email } = await req.json();
   try {
+    await dbConnect();
+
+    const user = await User.findOne({ email });
+
+    if (user.credits <= 0) {
+      return Response.json(
+        { error: "You do not have enough credits." },
+        { status: 400 }
+      );
+    }
     const genPrompt = await inference.chatCompletion({
       model: "Qwen/Qwen2.5-72B-Instruct",
       messages: [
@@ -30,6 +42,8 @@ export async function POST(req: Request) {
       inputs: prompt,
     });
 
+    user.credits -= 1;
+    await user.save();
     return new Response(res);
   } catch (error) {
     console.error(error);

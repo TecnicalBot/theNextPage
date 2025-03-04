@@ -7,14 +7,11 @@ export async function POST(req: Request) {
     await dbConnect();
     const user = await User.findOne({ email });
 
-    console.log(user.otp);
-    console.log(otp);
     if (!user) {
-      console.log("no user");
       return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    if (otp != user.otp) {
+    if (otp !== user.otp) {
       return Response.json({ error: "OTP didn't match" }, { status: 401 });
     }
 

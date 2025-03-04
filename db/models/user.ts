@@ -1,11 +1,14 @@
-import { IUser } from "@/types/user";
+import { IUser, PlanType } from "@/types/user";
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUserSchema extends IUser, Document {
+  credits: number;
+  creditsExpiry?: Date;
   failedAttempts: number;
   blockAccount: boolean;
   refreshToken?: string;
   otp?: number;
+  plan: PlanType;
   otpExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -25,6 +28,21 @@ const UserSchema: Schema = new Schema<IUserSchema>(
     },
     password: {
       type: String,
+      required: true,
+    },
+    credits: {
+      type: Number,
+      default: 15,
+      required: true,
+    },
+    creditsExpiry: {
+      type: Date,
+      default: Date.now() + 24 * 60 * 60 * 1000,
+    },
+    plan: {
+      type: String,
+      enum: Object.values(PlanType),
+      default: PlanType.Free,
       required: true,
     },
     failedAttempts: {

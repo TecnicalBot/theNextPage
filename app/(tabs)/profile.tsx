@@ -1,13 +1,13 @@
 import { Button } from "@/components/Button";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { getLibrary, removeBookFromLibrary, wait } from "@/lib/utils";
+import { getLibrary, removeBookFromLibrary } from "@/lib/utils";
 import { useSession } from "@/providers/AuthProvider";
 import { Book } from "@/types";
 import { IUser } from "@/types/user";
 import { router, useFocusEffect } from "expo-router";
 import { TrashIcon } from "lucide-react-native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -31,10 +31,6 @@ const ProfileScreen = () => {
     setUser(currentUser);
   };
 
-  useEffect(() => {
-    getCurrentUser();
-  }, [session]);
-
   const fetchLibrary = async () => {
     setLoading(true);
     const userLibrary = await getLibrary();
@@ -44,8 +40,9 @@ const ProfileScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      getCurrentUser();
       fetchLibrary();
-    }, [])
+    }, [session])
   );
 
   const handleRemoveBook = async (bookId: string) => {
@@ -93,6 +90,10 @@ const ProfileScreen = () => {
     signOut();
     router.replace("/(auth)/welcome");
   };
+
+  const handlePlanUpgrade = () => {
+    router.push("/(root)/planUpgrade");
+  };
   return (
     <SafeAreaView className="flex-1 bg-gray-900">
       <ThemedView className="items-center flex flex-row gap-5 py-10 pl-4">
@@ -100,20 +101,33 @@ const ProfileScreen = () => {
           source={{
             uri: `https://ui-avatars.com/api/?name=${user?.name}&format=png`,
           }}
-          className="w-16 h-16 rounded-full"
+          className="w-20 h-20 rounded-full"
           resizeMode="cover"
-          width={64}
-          height={64}
+          width={80}
+          height={80}
         />
 
         <ThemedView>
           <ThemedText className="text-2xl font-bold">{user?.name}</ThemedText>
           <ThemedText className="text-gray-400">{user?.email}</ThemedText>
+          <ThemedView className="flex flex-row gap-2">
+            <ThemedText className="text-gray-400">
+              Plan: {user?.plan}
+            </ThemedText>
+            <ThemedText className="text-gray-400">
+              Credits: {user?.credits}
+            </ThemedText>
+          </ThemedView>
         </ThemedView>
       </ThemedView>
-      <Button onPress={handleLogout} className="mx-4">
-        Logout
-      </Button>
+      <ThemedView className="flex flex-row gap-4 mx-4">
+        <Button onPress={handleLogout} className="flex-1">
+          Logout
+        </Button>
+        <Button onPress={handlePlanUpgrade} className="flex-1">
+          Upgrade
+        </Button>
+      </ThemedView>
       <ThemedText className="text-xl font-semibold p-4">
         My Collection
       </ThemedText>

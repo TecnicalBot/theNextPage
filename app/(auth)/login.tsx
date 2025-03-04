@@ -30,6 +30,7 @@ export default function LoginScreen() {
   });
 
   const onSubmit = async (data: IUser) => {
+    setLoading(true);
     const res = await fetch("/login", {
       method: "POST",
       body: JSON.stringify(data),

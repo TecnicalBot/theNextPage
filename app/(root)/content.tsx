@@ -19,6 +19,7 @@ import {
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { blobToBase64 } from "@/lib/utils";
+import { useSession } from "@/providers/AuthProvider";
 
 const htmlContent = `
 <!DOCTYPE html>
@@ -106,6 +107,7 @@ const htmlContent = `
 `;
 
 export default function BookDetail() {
+  const { session: email } = useSession();
   const [selection, setSelection] = useState<string>();
   const [position, setPosition] = useState<Record<string, number>>();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -132,7 +134,7 @@ export default function BookDetail() {
     setModalVisible(true);
     const response = await fetch("/translate", {
       method: "POST",
-      body: JSON.stringify({ text: selection }),
+      body: JSON.stringify({ text: selection, email }),
     });
     const data = await response.json();
     console.log(data);
@@ -145,7 +147,7 @@ export default function BookDetail() {
     setModalVisible(true);
     const response = await fetch("/imagine", {
       method: "POST",
-      body: JSON.stringify({ text: selection }),
+      body: JSON.stringify({ text: selection, email }),
     });
     const blob = await response.blob();
     const uniqueId = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;

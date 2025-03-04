@@ -100,3 +100,14 @@ export function wait(ms: number) {
 export function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
+
+export function formatCurrency(
+  amount: number,
+  currency = "IN",
+  locale = undefined
+) {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+  }).format(amount);
+}
